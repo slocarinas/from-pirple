@@ -1,8 +1,13 @@
+/*
+ * Primary file for API
+ * 
+ */
 
 // Dependencies
 var http = require("http");
 var url = require("url");
 var StringDecoder = require('string_decoder').StringDecoder;
+var config = require('./config');
 
 // The server should reposnd to all requests with a string
 var server = http.createServer(function(req, res){
@@ -80,8 +85,8 @@ var server = http.createServer(function(req, res){
 
 });
 
-server.listen(3000, function(){
-    console.log("The server is listening to port 3000 now.");
+server.listen(config.port, function(){
+    console.log("The server is listening to port: " + config.httpPort + " in " + config.envName );
 });
 
 // Define the handlers
