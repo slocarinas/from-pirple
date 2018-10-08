@@ -10,18 +10,33 @@ var url = require("url");
 var StringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
 var fs = require("fs");
+var _data = require('./lib/data');
+
+// TESTING
+// @TODO delete this
+//_data.create('test', 'newFile', {'foo' : 'bar'}, function(err){
+//    console.log('this was the error ', err);
+//});
+//_data.read('test', 'newFile1', function(err, data){
+//    console.log('this was the error ', err, ' and this was the data ', data);
+//});
+//_data.update('test', 'newFile', {'fix' : 'me'}, function(err, data){
+//    console.log('this was the error ', err, ' and this was the data ', data);
+//})
+_data.delete('test', 'newFile', function(err){
+    console.log('this was the error ', err);
+})
 
 // Instantiate the HTTP server
 var httpServer = http.createServer(function(req, res){
     unifiedServer(req, res);
-
 });
 
 httpServer.listen(config.httpPort, function(){
     console.log("The server is listening to port: " + config.httpPort + " in " + config.envName );
 });
 
-// Instantiate the HTTPS server
+// Instantiate the HTTPS server, starting with grabbing the certificates
 var httpsServerOptions = {
     'key' : fs.readFileSync('./https/key.pem'),
     'cert' : fs.readFileSync('./https/cert.pem')
@@ -29,7 +44,6 @@ var httpsServerOptions = {
 
 var httpsServer = https.createServer(httpsServerOptions, function(req, res){
     unifiedServer(req, res);
-
 });
 
 httpsServer.listen(config.httpaPort, function(){
@@ -116,19 +130,17 @@ var unifiedServer = function(req, res) {
 // Define the handlers
 var handlers = {};
 
-// Sample handler
-handlers.sample = function(data, callback){
-    // callback an http status code and payload object
-    callback(406, {'name':'sample handler'});
+// Ping handler
+handlers.ping = function(data, callback){
+    callback(200);
 };
 
 // Not found handler 
 handlers.notFound = function(data, callback){
     callback(404);
-
 };
 
 // Define request  router
 var router = {
-    'sample' : handlers.sample
+    'ping' : handlers.ping
 }
