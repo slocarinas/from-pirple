@@ -60,8 +60,9 @@ var unifiedServer = function(req, res) {
     var parsedURL = url.parse(req.url, true);
 
     // Get the path
-    var path = parsedURL.path;
-    var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    var path = parsedURL.pathname;
+    //var trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    var trimmedPath = path.replace(/^\/+|\/+$/g, "");
 
     // Get querystring as an object
     var queryStringObject = parsedURL.query;
@@ -85,6 +86,9 @@ var unifiedServer = function(req, res) {
 
         // Choose the handler that this request should go to. 
         var chosenRouter = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+        console.log(typeof(router[trimmedPath]));
+        console.log(trimmedPath);
+        console.log(path);
 
         // Construct the data object to send to the handler
         var data = {
